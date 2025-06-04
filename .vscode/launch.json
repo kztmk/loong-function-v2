@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach Firebase Functions",
+      "type": "node",
+      "request": "attach",
+      "port": 9229, // Functions エミュレータのデバッグポート (デフォルト)
+      "address": "localhost",
+      "protocol": "inspector",
+      "restart": true,
+      "outFiles": [
+        "${workspaceFolder}/functions/lib/**/*.js" // TypeScript の出力先ディレクトリ
+      ]
+    }
+  ]
+}

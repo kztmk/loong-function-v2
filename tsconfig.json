@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs", // Firebase Functions (Node.js) は CommonJS を使用
+    "target": "es2020", // サポートされているNode.jsバージョンに合わせたECMAScriptターゲット
+    "lib": ["es2020"],
+    "outDir": "lib", // トランスパイル後のJavaScriptファイルの出力先
+    "rootDir": "src", // TypeScriptソースファイルのルートディレクトリ
+    "strict": true, // すべての厳格な型チェックオプションを有効化
+    "esModuleInterop": true, // CommonJSモジュールとESモジュールの相互運用性を向上
+    "skipLibCheck": true, // 依存ライブラリの型チェックをスキップ
+    "forceConsistentCasingInFileNames": true, // ファイル名の大文字・小文字を区別
+    "resolveJsonModule": true, // JSONファイルのインポートを許可
+    "sourceMap": true, // デバッグ用にソースマップを生成
+    "declaration": false, // 型定義ファイル (.d.ts) は通常Functionsプロジェクトでは不要
+    "moduleResolution": "node" // モジュール解決戦略
+  },
+  "include": [
+    "src/**/*.ts" // コンパイル対象のファイル
+  ],
+  "exclude": ["node_modules", "lib"]
+}

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "lib",
+    "rootDir": "src", // ソースファイルのルートディレクトリを明示
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2022", // Node.js 22 に合わせてターゲットを更新
+    "lib": ["es2022"], // target に対応するライブラリを指定
+    "allowJs": true,
+    "skipLibCheck": true, // 依存関係の型チェックをスキップしてビルドを高速化 (任意)
+    "forceConsistentCasingInFileNames": true // ファイル名の大文字・小文字の区別を強制
+  },
+  "compileOnSave": true,
+  "include": [
+    "src/**/*.ts" // src ディレクトリ内のすべての TypeScript ファイルを対象に
+  ],
+  "exclude": ["node_modules", "lib"] // node_modules と出力先ディレクトリを除外
+}

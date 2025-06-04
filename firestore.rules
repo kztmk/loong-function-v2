@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // すべてのドキュメントに対してデフォルトのルール
+    match /{document=**} {
+      // Admin SDKからのアクセスは常に許可されるので、特にルールを書く必要はない
+      // クライアントからの書き込みはすべて拒否
+      allow write: if false;
+      allow read: if false;
+    }
+
+    // 'trends' コレクションに対するルール
+    match /XTrends/{trend} {
+      // 誰でも読み取り可能
+      allow read: if true;
+      // 書き込みは許可されない
+      allow write: if false;
+    }
+
+    // 'cookies' コレクションに対するルール
+    match /cookies/{cookie} {
+      // 読み取りおよび書き込みは拒否されるが、Admin SDKからのアクセスは可能
+      allow read, write: if false;
+    }
+  }
+}
