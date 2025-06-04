@@ -29,6 +29,9 @@
     "firestore": {
       "port": 8080
     },
+    "storage": {
+      "port": 9199
+    },
     "pubsub": {
       "port": 8085
     },
@@ -36,5 +39,8 @@
       "enabled": true
     },
     "singleProjectMode": true
+  },
+  "storage": {
+    "rules": "storage.rules"
   }
 }

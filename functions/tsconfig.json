@@ -10,7 +10,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2022", // Node.js 22 に合わせてターゲットを更新
-    "lib": ["es2022"], // target に対応するライブラリを指定
+    "lib": ["es2022", "dom"], // target に対応するライブラリを指定 (dom を追加)
     "allowJs": true,
     "skipLibCheck": true, // 依存関係の型チェックをスキップしてビルドを高速化 (任意)
     "forceConsistentCasingInFileNames": true // ファイル名の大文字・小文字の区別を強制

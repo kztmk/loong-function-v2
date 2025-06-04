@@ -1,22 +1,19 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import * as dotenv from 'dotenv';
+import * as admin from 'firebase-admin';
+import * as loong from './loong/services';
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+dotenv.config();
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-import * as functions from 'firebase-functions';
+export const mailFrom = process.env.MAIL_FROM;
+export const mailTo = process.env.MAIL_TO;
+export const gmailUser = process.env.GMAIL_USER;
+export const gmailPassword = process.env.GMAIL_PASSWORD;
+export const xloginId = process.env.X_LOGIN_ID;
+export const xloginPassword = process.env.X_LOGIN_PASSWORD;
+export const xloginAccountName = process.env.X_LOGIN_ACCOUNT_NAME;
+export const comfirmCode = process.env.COMFIRM_CODE;
 
-export const helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info('Hello logs!', { structuredData: true });
-  response.send('Hello from Firebase!');
-});
+admin.initializeApp();
+export const db = admin.firestore();
+export const bucket = admin.storage().bucket('crawler-screenshot');
+export { loong };
