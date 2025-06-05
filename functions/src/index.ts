@@ -15,5 +15,5 @@ export const comfirmCode = process.env.COMFIRM_CODE;
 
 admin.initializeApp();
 export const db = admin.firestore();
-export const bucket = admin.storage().bucket('crawler-screenshot');
+export const bucket = admin.storage().bucket();
 export { loong };

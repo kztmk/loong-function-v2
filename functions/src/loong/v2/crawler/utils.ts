@@ -1,5 +1,7 @@
 import { error, log } from 'firebase-functions/logger';
-import { ElementHandle, Page } from 'puppeteer';
+import { ElementHandle, Page } from 'puppeteer-core';
+
+export type PageLanguage = 'japanese' | 'english';
 
 /**
  * Sleeps for a specified amount of time.
@@ -119,3 +121,48 @@ export async function findLoginButton(page: Page) {
 
   return loginButton;
 }
+
+export const checkPageLanguageRobust = async (
+  page: any,
+  linkSelector: ElementHandle<HTMLAnchorElement>,
+): Promise<PageLanguage> => {
+  try {
+    await linkSelector.click();
+    log('Clicked link, waiting for H1 title to appear...');
+
+    // h1タグに "話題を検索" または "Explore" が表示されるのを待つ
+    const detectedLanguage = await page.waitForFunction(
+      () => {
+        const h1Elements = document.querySelectorAll('h1');
+        for (const h1 of Array.from(h1Elements)) {
+          // innerTextとtextContentの両方をチェック
+          const innerText = h1.innerText || '';
+          const textContent = h1.textContent || '';
+          const combinedText = (innerText + ' ' + textContent).trim();
+
+          if (combinedText.includes('話題を検索')) {
+            return 'japanese';
+          } else if (combinedText.includes('Explore')) {
+            return 'english';
+          }
+        }
+        return null; // まだ見つからない場合はnullを返す
+      },
+      { timeout: 15000 }, // タイムアウトを15秒に設定（必要に応じて調整）
+    );
+
+    const pageLanguageResult = await detectedLanguage.jsonValue();
+
+    if (pageLanguageResult === 'japanese' || pageLanguageResult === 'english') {
+      return pageLanguageResult;
+    } else {
+      throw new Error(
+        `Expected 'japanese' or 'english', but got: ${pageLanguageResult}`,
+      );
+    }
+  } catch (error) {
+    throw new Error(
+      `ページ確認中にエラーが発生しました: ${(error as Error).message}`,
+    );
+  }
+};

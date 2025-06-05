@@ -14,9 +14,9 @@ export const writeXtrends = onSchedule(
   {
     schedule: '0 4,8,12,16,20 * * *',
     timeZone: 'Asia/Tokyo',
-    // Puppeteerを使用するため、メモリとタイムアウトの指定を推奨します
-    // memory: '1GiB',
-    // timeoutSeconds: 300, // 5分
+    // Puppeteerを使用するため、メモリとタイムアウトの指定を推奨します (必須)
+    memory: '1GiB', // 少なくとも 1GiB を推奨
+    timeoutSeconds: 300, // 5分 (処理時間に応じて調整)
   },
   async (event: ScheduledEvent): Promise<void> => {
     log(

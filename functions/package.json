@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "eslint --ext .js,.ts",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
@@ -9,20 +9,20 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "debug": "firebase emulators:start --inspect-functions"
+    "debug": "firebase emulators:start --inspect-functions",
+    "gcp-build": "node node_modules/puppeteer/install.mjs"
   },
   "engines": {
     "node": "22"
   },
-  "main": "lib/index.js",
+  "main": "lib/src/index.js",
   "dependencies": {
+    "@sparticuz/chromium": "^133.0.0",
     "dotenv": "^16.5.0",
     "firebase-admin": "^12.6.0",
     "firebase-functions": "^6.0.1",
     "nodemailer": "^7.0.3",
-    "puppeteer": "^24.10.0",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "puppeteer-core": "^24.10.0"
   },
   "devDependencies": {
     "@types/nodemailer": "^6.4.17",

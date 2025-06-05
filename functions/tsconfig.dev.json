@@ -1,5 +1,4 @@
 {
-  "include": [
-    ".eslintrc.js"
-  ]
+  "files": [], // ESLintが .eslintrc.js 自体をLintする際に参照するが、他のファイルには影響しない
+  "include": [".eslintrc.js"] // .eslintrc.js のみを対象とする
 }

@@ -6,7 +6,6 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
-    "rootDir": "src", // ソースファイルのルートディレクトリを明示
     "sourceMap": true,
     "strict": true,
     "target": "es2022", // Node.js 22 に合わせてターゲットを更新
@@ -17,7 +16,8 @@
   },
   "compileOnSave": true,
   "include": [
-    "src/**/*.ts" // src ディレクトリ内のすべての TypeScript ファイルを対象に
+    "src/**/*.ts", // src ディレクトリ内のすべての TypeScript ファイルを対象に
+    ".eslintrc.js" // ESLint設定ファイル自体も対象に含める
   ],
   "exclude": ["node_modules", "lib"] // node_modules と出力先ディレクトリを除外
 }
