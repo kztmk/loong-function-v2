@@ -144,7 +144,7 @@ export async function crawlX(
     // if not login, redirect to login page
     let firstPage = '';
     const promiseLogined = page
-      .waitForSelector('a[href="/home"]', { timeout: 4000 })
+      .waitForSelector('a[href="/home"]', { timeout: 10000 })
       .then(
         () => {
           log('--------  home Timeline found');
@@ -159,7 +159,7 @@ export async function crawlX(
       );
     // not login
     const promiseNeedLogin = page
-      .waitForSelector('input[autocomplete="username"]', { timeout: 4000 })
+      .waitForSelector('input[autocomplete="username"]', { timeout: 10000 })
       .then(
         () => {
           log('--------  need login');
