@@ -1,5 +1,5 @@
 import { error, log } from 'firebase-functions/logger';
-import { Page } from 'puppeteer';
+import { Page } from 'puppeteer-core';
 import { bucket, comfirmCode } from '../../../index';
 import { findLoginButton, findNextButton } from './utils';
 /**
@@ -54,8 +54,8 @@ export async function loginByEmailAndPassword(
       );
       const suspectTitleElement = await page.$(suspectTitleSelector);
       if (suspectTitleElement) {
-        const suspectText = await suspectTitleElement.evaluate((el) =>
-          el.textContent?.trim(),
+        const suspectText = await suspectTitleElement.evaluate(
+          (el: HTMLElement) => el.textContent?.trim(),
         );
         log(`--------  Found potential suspect title: ${suspectText}`);
         if (
@@ -112,39 +112,49 @@ export async function loginByEmailAndPassword(
     log('--------  clicked login button');
     // check successfuly login?
     try {
-      await page.waitForSelector("a[href='/explore']", { timeout: 4000 });
+      await page.waitForSelector("a[href='/explore']", { timeout: 10000 });
     } catch (e) {
+      // retry
+      log('--------  failed to find explore link');
       try {
-        // request comfirmation code
-        log('--------  request comfirmation code');
-        const confirmInput = await page.waitForSelector(
-          'input[data-testid="ocfEnterTextTextInput"]',
-        );
-        log('--------  found confirm input');
-        if (confirmInput) {
-          log('--------  type comfirmation code');
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          await confirmInput.type(comfirmCode!, { delay: 120 });
-          const nextButton = await findNextButton(page);
-          if (nextButton) {
-            log('--------  found next button');
-            await nextButton.click();
-            return true;
-          }
-        }
-        return false;
+        await page.waitForSelector("a[href='/home']", { timeout: 3000 });
+        log('--------  found home link, login successful');
       } catch (e) {
-        log('--------  failed to find comfirmation code input');
-        log('-------- take screenshot and save to storage');
-        const screenShotBase64 = await page.screenshot({ encoding: 'base64' });
-        const file = bucket.file(
-          `puppeteer_screenshots/crawler_${Date.now()}.png`,
-        );
-        log('--------  created file');
-        await file.save(screenShotBase64, { contentType: 'image/png' });
-        log('--------  saved file');
-        log('--------  failed to find explore link');
-        return false;
+        log('--------  failed to find home link');
+        try {
+          // request comfirmation code
+          log('--------  request comfirmation code');
+          const confirmInput = await page.waitForSelector(
+            'input[data-testid="ocfEnterTextTextInput"]',
+          );
+          log('--------  found confirm input');
+          if (confirmInput) {
+            log('--------  type comfirmation code');
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            await confirmInput.type(comfirmCode!, { delay: 120 });
+            const nextButton = await findNextButton(page);
+            if (nextButton) {
+              log('--------  found next button');
+              await nextButton.click();
+              return true;
+            }
+          }
+          return false;
+        } catch (e) {
+          log('--------  failed to find comfirmation code input');
+          log('-------- take screenshot and save to storage');
+          const screenShotBase64 = await page.screenshot({
+            encoding: 'base64',
+          });
+          const file = bucket.file(
+            `puppeteer_screenshots/crawler_${Date.now()}.png`,
+          );
+          log('--------  created file');
+          await file.save(screenShotBase64, { contentType: 'image/png' });
+          log('--------  saved file');
+          log('--------  failed to find explore link');
+          return false;
+        }
       }
     }
     return true;

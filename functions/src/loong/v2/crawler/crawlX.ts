@@ -1,7 +1,6 @@
+import chromium from '@sparticuz/chromium';
 import { error, log } from 'firebase-functions/logger';
-import { Cookie } from 'puppeteer';
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import puppeteer, { Cookie } from 'puppeteer-core';
 import { bucket, db } from '../../../index';
 import { getXtrends } from './getXtrends';
 import { loginByEmailAndPassword } from './xLogin';
@@ -57,18 +56,29 @@ async function saveCookies(
   accountName: string,
   cookies: Cookie[],
 ): Promise<void> {
-  // Firestoreに保存する前に、各CookieオブジェクトからpartitionKeyプロパティを処理する
-  // partitionKeyがundefinedの場合、または単に除外したい場合は、プロパティごと削除する
-  const cookiesToSave = cookies.map((cookie) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { partitionKey, ...restOfCookie } = cookie;
-    return restOfCookie;
-  });
-  // Save the cookies to Firestore
-  await db
-    .collection('cookies')
-    .doc(accountName)
-    .set({ cookies: cookiesToSave });
+  log(
+    `[saveCookies] Starting for account: ${accountName}. Cookies count: ${cookies.length}`,
+  );
+  try {
+    // Firestoreに保存する前に、各CookieオブジェクトからpartitionKeyプロパティを処理する
+    // partitionKeyがundefinedの場合、または単に除外したい場合は、プロパティごと削除する
+    const cookiesToSave = cookies.map((cookie) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { partitionKey, ...restOfCookie } = cookie; // partitionKey を除外
+      return restOfCookie;
+    });
+    // Save the cookies to Firestore
+    await db
+      .collection('cookies')
+      .doc(accountName)
+      .set({ cookies: cookiesToSave });
+    log(`[saveCookies] Successfully saved cookies for account: ${accountName}`);
+  } catch (e) {
+    error(`[saveCookies] Error saving cookies for account ${accountName}:`, e);
+    // Firestoreへの保存エラーがPuppeteerのクラッシュに繋がることは考えにくいが、
+    // エラーをスローして crawlX の catch ブロックで処理させる
+    throw e;
+  }
 }
 
 /**
@@ -86,19 +96,18 @@ export async function crawlX(
   let updateCookie: Cookie[] = [];
 
   log('Start the crawler');
-  // stealth mode
-  // eslint-disable-next-line
-  puppeteer.use(StealthPlugin());
   //
   let xTrends = '';
   const browser = await puppeteer.launch({
-    headless: true, // CI環境などでは true に変更することを検討
+    headless: true, // Cloud Functions 環境では true にする必要があります
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--lang=ja-JP,ja',
-      // '--disable-dev-shm-usage', // メモリが少ない環境で有効な場合がある
+      '--disable-dev-shm-usage', // メモリが少ない環境で有効な場合がある
     ],
+    // Cloud Functions 環境にプリインストールされている Chromium を指定
+    executablePath: await chromium.executablePath(),
     // dumpio: true, // ブラウザのstdout/stderrをNode.jsのプロセスにパイプする
   });
   // new page and go to X homepage
