@@ -123,7 +123,7 @@ export async function findLoginButton(page: Page) {
 }
 
 export const checkPageLanguageRobust = async (
-  page: any,
+  page: Page,
   linkSelector: ElementHandle<HTMLAnchorElement>,
 ): Promise<PageLanguage> => {
   try {
