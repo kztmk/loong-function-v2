@@ -15,7 +15,7 @@
   "engines": {
     "node": "22"
   },
-  "main": "lib/src/index.js",
+  "main": "lib/index.js",
   "dependencies": {
     "@sparticuz/chromium": "^133.0.0",
     "dotenv": "^16.5.0",
